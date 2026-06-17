@@ -102,7 +102,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="auth-card">
     <div class="auth-logo">✦</div>
     <h1>Kutsal Kitap Günlüğü</h1>
-    <p>Tevrat · Zebur · İncil</p>
+    <p>Tevrat - Zebur - İncil</p>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('giris')">Giriş Yap</button>
       <button class="auth-tab" onclick="switchAuthTab('kayit')">Kayıt Ol</button>
@@ -240,12 +240,12 @@ const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const VERSES = [
-  { text: '"RABB benim çobanım, eksiğim olmaz."', ref: 'Mezmurlar 23:1', sorular: ['Bu ayet sana bugün ne söylüyor?', "Tanrı'nın rehberliğini hayatında nerede görüyorsun?", 'Eksik hissettiğin alanlar neler?'] },
-  { text: '"RABB olan Tanrın seni seviyor; bu nedenle seni kutsayacak."', ref: "Yasa'nın Tekrarı 7:13", sorular: ["Tanrı'nın sevgisini bugün nasıl hissediyorsun?", 'Kutsanmak sana ne ifade eder?', 'Bu sevgiye nasıl karşılık verebilirsin?'] },
-  { text: '"Rabbiniz Tanrıyı bütün yüreğinizle, bütün canınızla seveceksiniz."', ref: 'Matta 22:37', sorular: ["Tanrı'yı sevmek sence ne anlama geliyor?", 'Bugün bütün yüreğinle sevmeni engelleyen neler var?', 'Bu emri nasıl yaşayabilirsin?'] },
-  { text: '"Her şeyi güçlendiren Mesih aracılığıyla her şeye gücüm yeter."', ref: 'Filipililer 4:13', sorular: ['Bugün güce ihtiyaç duyduğun alan nedir?', "Mesih'in gücüne ne zaman en çok ihtiyaç duyuyorsun?", 'Bu vaadi pratikte nasıl deneyimleyebilirsin?'] },
-  { text: '"Kaygılanmayın, her konuda isteklerinizi Tanrıya bildirin."', ref: 'Filipililer 4:6', sorular: ['Şu an seni kaygılandıran nedir?', 'Dua etmekle kaygılanmak arasındaki fark nedir?', 'Bugün ne için dua edeceksin?'] },
-  { text: '"RABB sizi korur, her türlü kötülükten korur, canınızı korur."', ref: 'Mezmurlar 121:7', sorular: ['Korunmaya ihtiyaç duyduğun bir alan var mı?', "Tanrı'nın korumasını geçmişte nasıl deneyimledin?", 'Bu ayet sana bugün nasıl güven veriyor?'] },
+  { text: 'RABB benim cobanim, eksigim olmaz.', ref: 'Mezmurlar 23:1', sorular: ['Bu ayet sana bugun ne soyluyor?', 'Tanrinin rehberligini hayatinda nerede goruyorsun?', 'Eksik hissettigin alanlar neler?'] },
+  { text: 'RABB olan Tanrin seni seviyor; bu nedenle seni kutsayacak.', ref: 'Yasanin Tekrari 7:13', sorular: ['Tanrinin sevgisini bugun nasil hissediyorsun?', 'Kutsanmak sana ne ifade eder?', 'Bu sevgiye nasil karsilik verebilirsin?'] },
+  { text: 'Rabbiniz Tanrıyı butun yuregınizle, butun caninizla seveceksiniz.', ref: 'Matta 22:37', sorular: ['Tanriyi sevmek sence ne anlama geliyor?', 'Bugun butun yuregınle sevmeni engelleyen neler var?', 'Bu emri nasil yasayabilirsin?'] },
+  { text: 'Her seyi guclendiren Mesih araciligiyla her seye gucum yeter.', ref: 'Filipililer 4:13', sorular: ['Bugun guce ihtiyac duydugun alan nedir?', 'Mesihin gucune ne zaman en cok ihtiyac duyuyorsun?', 'Bu vaadi pratikte nasil deneyimleyebilirsin?'] },
+  { text: 'Kaygilanmayin, her konuda isteklerinizi Tanriya bildirin.', ref: 'Filipililer 4:6', sorular: ['Su an seni kaygilantiran nedir?', 'Dua etmekle kaygilanmak arasindaki fark nedir?', 'Bugun ne icin dua edeceksin?'] },
+  { text: 'RABB sizi korur, her turlu kotulutten korur, caninizi korur.', ref: 'Mezmurlar 121:7', sorular: ['Korunmaya ihtiyac duydugun bir alan var mi?', 'Tanrinin korumasini gecmiste nasil deneyimledin?', 'Bu ayet sana bugun nasil guven veriyor?'] },
 ];
 
 let currentVerseIdx = Math.floor(Math.random() * VERSES.length);
@@ -412,20 +412,23 @@ function ayetDuzenle(id) {
   const a = ayetData.find(function(x) { return x.id === id; });
   if (!a) return;
   const el = document.getElementById('ayet-' + id);
-  el.innerHTML =
-    '<div class="fg"><label class="fl">Kitap</label>' +
-    '<select class="form-select" id="ek-' + id + '">' +
-    '<option value="eskiahit"' + (a.kitap === 'eskiahit' ? ' selected' : '') + '>Eski Ahit</option>' +
-    '<option value="yeniahit"' + (a.kitap === 'yeniahit' ? ' selected' : '') + '>Yeni Ahit</option>' +
-    '</select></div>' +
-    '<div class="fg"><label class="fl">Referans</label><input class="fi" id="er-' + id + '" value="' + a.ref + '" /></div>' +
-    '<div class="fg"><label class="fl">Ayet Metni</label><textarea class="form-textarea" id="em-' + id + '">' + a.metin + '</textarea></div>' +
-    '<div class="fg"><label class="fl">Notun</label><textarea class="form-textarea" id="en-' + id + '" style="min-height:60px">' + (a.aciklama || '') + '</textarea></div>' +
-    '<div class="btn-row">' +
-    '<button class="btn" onclick="ayetKaydet(\'' + id + '\')">Kaydet</button>' +
-    '<button class="btn-outline" onclick="loadAyetler()">İptal</button>' +
-    '</div>';
+  const html = '<div class="fg"><label class="fl">Kitap</label>'
+    + '<select class="form-select" id="ek-' + id + '">'
+    + '<option value="eskiahit"' + (a.kitap === 'eskiahit' ? ' selected' : '') + '>Eski Ahit</option>'
+    + '<option value="yeniahit"' + (a.kitap === 'yeniahit' ? ' selected' : '') + '>Yeni Ahit</option>'
+    + '</select></div>'
+    + '<div class="fg"><label class="fl">Referans</label><input class="fi" id="er-' + id + '" value="' + a.ref + '" /></div>'
+    + '<div class="fg"><label class="fl">Ayet Metni</label><textarea class="form-textarea" id="em-' + id + '">' + a.metin + '</textarea></div>'
+    + '<div class="fg"><label class="fl">Notun</label><textarea class="form-textarea" id="en-' + id + '" style="min-height:60px">' + (a.aciklama || '') + '</textarea></div>'
+    + '<div class="btn-row">'
+    + '<button class="btn" id="kaydet-' + id + '">Kaydet</button>'
+    + '<button class="btn-outline" id="iptal-' + id + '">Iptal</button>'
+    + '</div>';
+  el.innerHTML = html;
+  document.getElementById('kaydet-' + id).onclick = function() { ayetKaydet(id); };
+  document.getElementById('iptal-' + id).onclick = function() { loadAyetler(); };
 }
+
 
 async function ayetKaydet(id) {
   const kitap = document.getElementById('ek-' + id).value;
@@ -457,7 +460,7 @@ async function loadJournals() {
   journalData = data;
   const html = data.map(function(j) {
     const tarih = new Date(j.tarih).toLocaleDateString('tr-TR');
-    const refStr = j.ref ? ' · ' + j.ref : '';
+    const refStr = j.ref ? ' - ' + j.ref : '';
     const preview = j.metin.slice(0, 120) + (j.metin.length > 120 ? '...' : '');
     return '<div class="journal-card" id="journal-' + j.id + '">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
@@ -476,15 +479,18 @@ function journalDuzenle(id) {
   const j = journalData.find(function(x) { return x.id === id; });
   if (!j) return;
   const el = document.getElementById('journal-' + id);
-  el.innerHTML =
-    '<div class="fg"><label class="fl">Başlık</label><input class="fi" id="jb-' + id + '" value="' + j.baslik + '" /></div>' +
-    '<div class="fg"><label class="fl">Pasaj / Ayet</label><input class="fi" id="jr-' + id + '" value="' + (j.ref || '') + '" /></div>' +
-    '<div class="fg"><label class="fl">Yazın</label><textarea class="form-textarea" id="jm-' + id + '" style="min-height:120px">' + j.metin + '</textarea></div>' +
-    '<div class="btn-row">' +
-    '<button class="btn" onclick="journalKaydet(\'' + id + '\')">Kaydet</button>' +
-    '<button class="btn-outline" onclick="loadJournals()">İptal</button>' +
-    '</div>';
+  const html = '<div class="fg"><label class="fl">Baslik</label><input class="fi" id="jb-' + id + '" value="' + j.baslik + '" /></div>'
+    + '<div class="fg"><label class="fl">Pasaj / Ayet</label><input class="fi" id="jr-' + id + '" value="' + (j.ref || '') + '" /></div>'
+    + '<div class="fg"><label class="fl">Yazin</label><textarea class="form-textarea" id="jm-' + id + '" style="min-height:120px">' + j.metin + '</textarea></div>'
+    + '<div class="btn-row">'
+    + '<button class="btn" id="jkaydet-' + id + '">Kaydet</button>'
+    + '<button class="btn-outline" id="jiptal-' + id + '">Iptal</button>'
+    + '</div>';
+  el.innerHTML = html;
+  document.getElementById('jkaydet-' + id).onclick = function() { journalKaydet(id); };
+  document.getElementById('jiptal-' + id).onclick = function() { loadJournals(); };
 }
+
 
 async function journalKaydet(id) {
   const baslik = document.getElementById('jb-' + id).value.trim();
@@ -515,6 +521,7 @@ async function loadGecmis() {
   let items = [];
   (ayetRes.data || []).forEach(function(a) { items.push(Object.assign({ tip: 'ayet' }, a)); });
   (journalRes.data || []).forEach(function(j) { items.push(Object.assign({ tip: 'journal' }, j)); });
+  cevapData = cevapRes.data || [];
   (cevapRes.data || []).forEach(function(c) { items.push(Object.assign({ tip: 'cevap' }, c)); });
   items.sort(function(a, b) { return new Date(b.tarih) - new Date(a.tarih); });
   const filtered = currentFilter === 'hepsi' ? items : items.filter(function(i) { return i.tip === currentFilter; });
@@ -533,23 +540,70 @@ async function loadGecmis() {
     }
     if (g.tip === 'journal') {
       return '<div class="journal-card">' +
-        '<div class="journal-date">' + tarih + ' · Günlük</div>' +
+        '<div class="journal-date">' + tarih + ' - Günlük</div>' +
         '<div class="journal-title">' + g.baslik + '</div>' +
         '<div class="journal-preview">' + g.metin.slice(0, 100) + '...</div></div>';
     }
-    if (g.tip === 'cevap') {
-      const cevapHtml = (g.cevaplar || []).filter(function(c) { return c; }).map(function(c) {
-        return '<div class="verse-card-note">' + c + '</div>';
+        if (g.tip === 'cevap') {
+      const sorular = [
+        'Bu ayet sana bugün ne söylüyor?',
+        'Bu ayetin mesajını bugün pratiğe nasıl dökersin?',
+        'Bu konuda Tanrı sana ne söylüyor olabilir?'
+      ];
+      const cevapHtml = (g.cevaplar || []).map(function(c, i) {
+        if (!c) return '';
+        return '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--navy4)">' +
+          '<div style="font-size:11px;color:var(--gold);margin-bottom:3px;">' + sorular[i] + '</div>' +
+          '<div class="verse-card-note" style="border-top:none;padding-top:0;margin-top:0;">' + c + '</div></div>';
       }).join('');
-      return '<div class="verse-card-item">' +
-        '<div class="verse-card-ref">Günlük Cevaplar · ' + g.ayet_ref +
+      return '<div class="verse-card-item" id="cevap-' + g.id + '">' +
+        '<div class="verse-card-ref">Günlük Cevaplar - ' + g.ayet_ref +
         '<span class="tarih-kucuk">' + tarih + '</span>' +
-        '<button class="btn-sil" onclick="cevapSil(\'' + g.id + '\')">🗑️</button></div>' +
+        '<div class="card-actions">' +
+        '<button class="btn-edit" onclick="cevapDuzenle(\'' + g.id + '\')">✏️</button>' +
+        '<button class="btn-sil" onclick="cevapSil(\'' + g.id + '\')">🗑️</button>' +
+        '</div></div>' +
         cevapHtml + '</div>';
     }
     return '';
   });
   el.innerHTML = html.join('');
+}
+
+let cevapData = [];
+
+function cevapDuzenle(id) {
+  const c = cevapData.find(function(x) { return x.id === id; });
+  if (!c) return;
+  const sorular = [
+    'Bu ayet sana bugun ne soyluyor?',
+    'Bu ayetin mesajini bugun pratikce nasil dokersin?',
+    'Bu konuda Tanri sana ne soyluyor olabilir?'
+  ];
+  const el = document.getElementById('cevap-' + id);
+  let html = '<div style="font-size:12px;color:var(--gold2);margin-bottom:12px;">Gunluk Cevaplar - ' + c.ayet_ref + '</div>';
+  for (let i = 0; i < 3; i++) {
+    html += '<div class="fg"><label class="fl">' + sorular[i] + '</label>'
+      + '<textarea class="form-textarea" id="cv-' + i + '-' + id + '" style="min-height:60px">' + ((c.cevaplar && c.cevaplar[i]) || '') + '</textarea></div>';
+  }
+  html += '<div class="btn-row">'
+    + '<button class="btn" id="ckaydet-' + id + '">Kaydet</button>'
+    + '<button class="btn-outline" id="ciptal-' + id + '">Iptal</button>'
+    + '</div>';
+  el.innerHTML = html;
+  document.getElementById('ckaydet-' + id).onclick = function() { cevapKaydet(id); };
+  document.getElementById('ciptal-' + id).onclick = function() { loadGecmis(); };
+}
+
+
+async function cevapKaydet(id) {
+  const cevaplar = [0,1,2].map(function(i) {
+    return document.getElementById('cv-' + i + '-' + id).value.trim();
+  });
+  const { error } = await sb.from('gunluk_cevaplar').update({ cevaplar }).eq('id', id);
+  if (error) { showToast('Hata: ' + error.message); return; }
+  showToast('Cevaplar güncellendi ✦');
+  loadGecmis();
 }
 
 async function cevapSil(id) {
