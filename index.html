@@ -150,15 +150,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="section-title">Derinleşme Soruları</div>
         <div class="question-item">
           <div class="question-text" id="q1">Bu ayet sana bugün ne söylüyor?</div>
-          <textarea class="form-textarea" id="a1" placeholder="Düşüncelerini yaz..."></textarea>
+          <textarea spellcheck="false" class="form-textarea" id="a1" placeholder="Düşüncelerini yaz..."></textarea>
         </div>
         <div class="question-item">
           <div class="question-text" id="q2">Bu ayetin mesajını bugün pratiğe nasıl dökersin?</div>
-          <textarea class="form-textarea" id="a2" placeholder="Düşüncelerini yaz..."></textarea>
+          <textarea spellcheck="false" class="form-textarea" id="a2" placeholder="Düşüncelerini yaz..."></textarea>
         </div>
         <div class="question-item">
           <div class="question-text" id="q3">Bu konuda Tanrı sana ne söylüyor olabilir?</div>
-          <textarea class="form-textarea" id="a3" placeholder="Düşüncelerini yaz..."></textarea>
+          <textarea spellcheck="false" class="form-textarea" id="a3" placeholder="Düşüncelerini yaz..."></textarea>
         </div>
         <div class="btn-row">
           <button class="btn" onclick="saveDailyAnswers()">Cevapları Kaydet</button>
@@ -183,11 +183,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         </div>
         <div class="fg">
           <label class="fl">Ayet Metni</label>
-          <textarea class="form-textarea" id="ayetMetin" placeholder="Ayeti buraya yaz..."></textarea>
+          <textarea spellcheck="false" class="form-textarea" id="ayetMetin" placeholder="Ayeti buraya yaz..."></textarea>
         </div>
         <div class="fg">
           <label class="fl">Notun</label>
-          <textarea class="form-textarea" id="ayetNot" placeholder="Bu ayet sana ne ifade ediyor?" style="min-height:70px;"></textarea>
+          <textarea spellcheck="false" class="form-textarea" id="ayetNot" placeholder="Bu ayet sana ne ifade ediyor?" style="min-height:70px;"></textarea>
         </div>
         <button class="btn" onclick="ayetEkle()">Ayeti Kaydet</button>
       </div>
@@ -209,7 +209,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         </div>
         <div class="fg">
           <label class="fl">Yazın</label>
-          <textarea class="form-textarea" id="journalMetin" placeholder="Bugün okuduğun pasajla ilgili düşüncelerini yaz..." style="min-height:130px;"></textarea>
+          <textarea spellcheck="false" class="form-textarea" id="journalMetin" placeholder="Bugün okuduğun pasajla ilgili düşüncelerini yaz..." style="min-height:130px;"></textarea>
         </div>
         <button class="btn" onclick="journalEkle()">Günlüğü Kaydet</button>
       </div>
@@ -418,8 +418,8 @@ function ayetDuzenle(id) {
     + '<option value="yeniahit"' + (a.kitap === 'yeniahit' ? ' selected' : '') + '>Yeni Ahit</option>'
     + '</select></div>'
     + '<div class="fg"><label class="fl">Referans</label><input class="fi" id="er-' + id + '" value="' + a.ref + '" /></div>'
-    + '<div class="fg"><label class="fl">Ayet Metni</label><textarea class="form-textarea" id="em-' + id + '">' + a.metin + '</textarea></div>'
-    + '<div class="fg"><label class="fl">Notun</label><textarea class="form-textarea" id="en-' + id + '" style="min-height:60px">' + (a.aciklama || '') + '</textarea></div>'
+    + '<div class="fg"><label class="fl">Ayet Metni</label><textarea spellcheck="false" class="form-textarea" id="em-' + id + '">' + a.metin + '</textarea></div>'
+    + '<div class="fg"><label class="fl">Notun</label><textarea spellcheck="false" class="form-textarea" id="en-' + id + '" style="min-height:60px">' + (a.aciklama || '') + '</textarea></div>'
     + '<div class="btn-row">'
     + '<button class="btn" id="kaydet-' + id + '">Kaydet</button>'
     + '<button class="btn-outline" id="iptal-' + id + '">Iptal</button>'
@@ -481,7 +481,7 @@ function journalDuzenle(id) {
   const el = document.getElementById('journal-' + id);
   const html = '<div class="fg"><label class="fl">Baslik</label><input class="fi" id="jb-' + id + '" value="' + j.baslik + '" /></div>'
     + '<div class="fg"><label class="fl">Pasaj / Ayet</label><input class="fi" id="jr-' + id + '" value="' + (j.ref || '') + '" /></div>'
-    + '<div class="fg"><label class="fl">Yazin</label><textarea class="form-textarea" id="jm-' + id + '" style="min-height:120px">' + j.metin + '</textarea></div>'
+    + '<div class="fg"><label class="fl">Yazin</label><textarea spellcheck="false" class="form-textarea" id="jm-' + id + '" style="min-height:120px">' + j.metin + '</textarea></div>'
     + '<div class="btn-row">'
     + '<button class="btn" id="jkaydet-' + id + '">Kaydet</button>'
     + '<button class="btn-outline" id="jiptal-' + id + '">Iptal</button>'
@@ -584,7 +584,7 @@ function cevapDuzenle(id) {
   let html = '<div style="font-size:12px;color:var(--gold2);margin-bottom:12px;">Gunluk Cevaplar - ' + c.ayet_ref + '</div>';
   for (let i = 0; i < 3; i++) {
     html += '<div class="fg"><label class="fl">' + sorular[i] + '</label>'
-      + '<textarea class="form-textarea" id="cv-' + i + '-' + id + '" style="min-height:60px">' + ((c.cevaplar && c.cevaplar[i]) || '') + '</textarea></div>';
+      + '<textarea spellcheck="false" class="form-textarea" id="cv-' + i + '-' + id + '" style="min-height:60px">' + ((c.cevaplar && c.cevaplar[i]) || '') + '</textarea></div>';
   }
   html += '<div class="btn-row">'
     + '<button class="btn" id="ckaydet-' + id + '">Kaydet</button>'
