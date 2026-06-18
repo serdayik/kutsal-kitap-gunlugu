@@ -706,8 +706,10 @@ async function loadAyetler() {
         <span class="kitap-badge ${a.kitap}">${a.kitap.charAt(0).toUpperCase() + a.kitap.slice(1)}</span>
         ${a.ref}
         <span class="tarih-kucuk">${new Date(a.tarih).toLocaleDateString('tr-TR')}</span>
-        <button class="btn-edit" onclick="ayetDuzenle(${JSON.stringify(a).replace(/"/g, '&quot;')})">Düzenle</button>
-        <button class="btn-danger" onclick="ayetSil('${a.id}')">Sil</button>
+        <div class="ikon-buton-grup">
+          <button class="btn-edit" onclick="ayetDuzenle(${JSON.stringify(a).replace(/"/g, '&quot;')})" title="Düzenle">✏️</button>
+          <button class="btn-danger" onclick="ayetSil('${a.id}')" title="Sil">🗑️</button>
+        </div>
       </div>
       <div class="verse-card-text">${a.metin}</div>
       ${a.aciklama ? `<div class="verse-card-note">${a.aciklama}</div>` : ''}
@@ -751,8 +753,10 @@ async function loadJournals() {
     <div class="journal-card">
       <div class="journal-date" style="display:flex;justify-content:space-between;align-items:center;">
         <span>${new Date(j.tarih).toLocaleDateString('tr-TR')}${j.ref ? ' · ' + j.ref : ''}</span>
-        <button class="btn-edit" onclick="journalDuzenle(${JSON.stringify(j).replace(/"/g, '&quot;')})">Düzenle</button>
-        <button class="btn-danger" onclick="journalSil('${j.id}')">Sil</button>
+        <div class="ikon-buton-grup">
+          <button class="btn-edit" onclick="journalDuzenle(${JSON.stringify(j).replace(/"/g, '&quot;')})" title="Düzenle">✏️</button>
+          <button class="btn-danger" onclick="journalSil('${j.id}')" title="Sil">🗑️</button>
+        </div>
       </div>
       <div class="journal-title">${j.baslik}</div>
       <div class="journal-preview">${j.metin.slice(0, 150)}${j.metin.length > 150 ? '...' : ''}</div>
@@ -799,8 +803,10 @@ async function loadDualar() {
           <div class="dua-card-baslik">${d.baslik}</div>
           <div class="dua-card-tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}${d.ref ? ' · ' + d.ref : ''}</div>
         </div>
-        <button class="btn-edit" onclick="duaDuzenle(${JSON.stringify(d).replace(/"/g, '&quot;')})">Düzenle</button>
-        <button class="btn-danger" onclick="duaSil('${d.id}')">Sil</button>
+        <div class="ikon-buton-grup">
+          <button class="btn-edit" onclick="duaDuzenle(${JSON.stringify(d).replace(/"/g, '&quot;')})" title="Düzenle">✏️</button>
+          <button class="btn-danger" onclick="duaSil('${d.id}')" title="Sil">🗑️</button>
+        </div>
       </div>
       <div class="dua-card-metin">${d.metin.slice(0, 180)}${d.metin.length > 180 ? '...' : ''}</div>
     </div>
