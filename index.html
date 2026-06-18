@@ -194,6 +194,30 @@
   }
   .btn-danger:hover { background: #3a1a1a; }
 
+  .btn-edit {
+    background: none; color: var(--gold2); border: 1px solid var(--navy4);
+    padding: 5px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    font-family: inherit; transition: all 0.2s;
+  }
+  .btn-edit:hover { border-color: var(--gold); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--navy2); border: 1px solid var(--navy4); border-radius: 16px;
+    padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+  }
+  .modal-title { font-size: 15px; color: var(--gold2); margin-bottom: 16px; font-weight: 500; }
+  .modal-btn-row { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
+  .btn-cancel {
+    background: none; color: var(--text-muted); border: 1px solid var(--navy4);
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+
   .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
 
   .fg { margin-bottom: 12px; }
@@ -428,7 +452,7 @@
           <div style="font-size:12px;color:var(--text-muted);line-height:2;">
             • Bugün Tanrı'ya şükrettiğin 3 şey nedir?<br>
             • Tanrı'dan ne istiyorsun? Neden bu isteğin var?<br>
-            • Başkaları için ne dua etmek istiyorsun?<br>
+            • Başkaları için nasıl dua etmek istiyorsun?<br>
             • İçinde taşıdığın bir yük var mı? Onu Tanrı'ya bırakabilir misin?<br>
             • Tanrı bu hafta sana ne öğretti?
           </div>
@@ -502,6 +526,56 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- DÜZENLEME MODALLARı -->
+<div class="modal-overlay" id="modalAyet">
+  <div class="modal">
+    <div class="modal-title">Ayeti Düzenle</div>
+    <input type="hidden" id="editAyetId" />
+    <div class="fg"><label class="fl">Kitap</label>
+      <select class="form-select" id="editAyetKitap">
+        <option value="tevrat">Tevrat</option>
+        <option value="zebur">Zebur</option>
+        <option value="incil">İncil</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Referans</label><input class="fi" id="editAyetRef" /></div>
+    <div class="fg"><label class="fl">Ayet Metni</label><textarea class="form-textarea" id="editAyetMetin" style="min-height:80px;"></textarea></div>
+    <div class="fg"><label class="fl">Notun</label><textarea class="form-textarea" id="editAyetNot" style="min-height:60px;"></textarea></div>
+    <div class="modal-btn-row">
+      <button class="btn-cancel" onclick="modalKapat('modalAyet')">Vazgeç</button>
+      <button class="btn" onclick="ayetGuncelle()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalJournal">
+  <div class="modal">
+    <div class="modal-title">Günlüğü Düzenle</div>
+    <input type="hidden" id="editJournalId" />
+    <div class="fg"><label class="fl">Başlık</label><input class="fi" id="editJournalBaslik" /></div>
+    <div class="fg"><label class="fl">İlgili Ayet</label><input class="fi" id="editJournalRef" /></div>
+    <div class="fg"><label class="fl">Yazı</label><textarea class="form-textarea" id="editJournalMetin" style="min-height:130px;"></textarea></div>
+    <div class="modal-btn-row">
+      <button class="btn-cancel" onclick="modalKapat('modalJournal')">Vazgeç</button>
+      <button class="btn" onclick="journalGuncelle()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalDua">
+  <div class="modal">
+    <div class="modal-title">Duayı Düzenle</div>
+    <input type="hidden" id="editDuaId" />
+    <div class="fg"><label class="fl">Başlık</label><input class="fi" id="editDuaBaslik" /></div>
+    <div class="fg"><label class="fl">Dua</label><textarea class="form-textarea" id="editDuaMetin" style="min-height:130px;"></textarea></div>
+    <div class="fg"><label class="fl">İlgili Ayet</label><input class="fi" id="editDuaRef" /></div>
+    <div class="modal-btn-row">
+      <button class="btn-cancel" onclick="modalKapat('modalDua')">Vazgeç</button>
+      <button class="btn" onclick="duaGuncelle()">Kaydet</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://jqmddsnmhxmckrbcxcvt.supabase.co';
@@ -634,6 +708,7 @@ async function loadAyetler() {
         <span class="kitap-badge ${a.kitap}">${a.kitap.charAt(0).toUpperCase() + a.kitap.slice(1)}</span>
         ${a.ref}
         <span class="tarih-kucuk">${new Date(a.tarih).toLocaleDateString('tr-TR')}</span>
+        <button class="btn-edit" onclick="ayetDuzenle(${JSON.stringify(a).replace(/"/g, '&quot;')})">Düzenle</button>
         <button class="btn-danger" onclick="ayetSil('${a.id}')">Sil</button>
       </div>
       <div class="verse-card-text">${a.metin}</div>
@@ -678,6 +753,7 @@ async function loadJournals() {
     <div class="journal-card">
       <div class="journal-date" style="display:flex;justify-content:space-between;align-items:center;">
         <span>${new Date(j.tarih).toLocaleDateString('tr-TR')}${j.ref ? ' · ' + j.ref : ''}</span>
+        <button class="btn-edit" onclick="journalDuzenle(${JSON.stringify(j).replace(/"/g, '&quot;')})">Düzenle</button>
         <button class="btn-danger" onclick="journalSil('${j.id}')">Sil</button>
       </div>
       <div class="journal-title">${j.baslik}</div>
@@ -725,6 +801,7 @@ async function loadDualar() {
           <div class="dua-card-baslik">${d.baslik}</div>
           <div class="dua-card-tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}${d.ref ? ' · ' + d.ref : ''}</div>
         </div>
+        <button class="btn-edit" onclick="duaDuzenle(${JSON.stringify(d).replace(/"/g, '&quot;')})">Düzenle</button>
         <button class="btn-danger" onclick="duaSil('${d.id}')">Sil</button>
       </div>
       <div class="dua-card-metin">${d.metin.slice(0, 180)}${d.metin.length > 180 ? '...' : ''}</div>
@@ -932,6 +1009,85 @@ async function loadGecmis() {
         <div class="dua-card-metin">${g.metin.slice(0, 100)}...</div>
       </div>`;
   }).join('');
+}
+
+
+// MODAL YARDIMCILARI
+function modalAc(id) { document.getElementById(id).classList.add('open'); }
+function modalKapat(id) { document.getElementById(id).classList.remove('open'); }
+
+// AYET DÜZENLE
+function ayetDuzenle(a) {
+  if (typeof a === "string") a = JSON.parse(a.replace(/&quot;/g, '"'));
+  document.getElementById('editAyetId').value = a.id;
+  document.getElementById('editAyetKitap').value = a.kitap;
+  document.getElementById('editAyetRef').value = a.ref;
+  document.getElementById('editAyetMetin').value = a.metin;
+  document.getElementById('editAyetNot').value = a.aciklama || '';
+  modalAc('modalAyet');
+}
+
+async function ayetGuncelle() {
+  const id = document.getElementById('editAyetId').value;
+  const kitap = document.getElementById('editAyetKitap').value;
+  const ref = document.getElementById('editAyetRef').value.trim();
+  const metin = document.getElementById('editAyetMetin').value.trim();
+  const aciklama = document.getElementById('editAyetNot').value.trim();
+  if (!ref || !metin) { showToast('Referans ve metin gerekli!'); return; }
+  const { error } = await sb.from('ayetler').update({ kitap, ref, metin, aciklama }).eq('id', id);
+  if (error) { showToast('Hata: ' + error.message); return; }
+  modalKapat('modalAyet');
+  showToast('Ayet güncellendi ✦');
+  loadAyetler();
+  loadGecmis();
+}
+
+// GÜNLÜK DÜZENLE
+function journalDuzenle(j) {
+  if (typeof j === "string") j = JSON.parse(j.replace(/&quot;/g, '"'));
+  document.getElementById('editJournalId').value = j.id;
+  document.getElementById('editJournalBaslik').value = j.baslik;
+  document.getElementById('editJournalRef').value = j.ref || '';
+  document.getElementById('editJournalMetin').value = j.metin;
+  modalAc('modalJournal');
+}
+
+async function journalGuncelle() {
+  const id = document.getElementById('editJournalId').value;
+  const baslik = document.getElementById('editJournalBaslik').value.trim();
+  const ref = document.getElementById('editJournalRef').value.trim();
+  const metin = document.getElementById('editJournalMetin').value.trim();
+  if (!baslik || !metin) { showToast('Başlık ve yazı gerekli!'); return; }
+  const { error } = await sb.from('gunlukler').update({ baslik, ref, metin }).eq('id', id);
+  if (error) { showToast('Hata: ' + error.message); return; }
+  modalKapat('modalJournal');
+  showToast('Günlük güncellendi ✦');
+  loadJournals();
+  loadGecmis();
+}
+
+// DUA DÜZENLE
+function duaDuzenle(d) {
+  if (typeof d === "string") d = JSON.parse(d.replace(/&quot;/g, '"'));
+  document.getElementById('editDuaId').value = d.id;
+  document.getElementById('editDuaBaslik').value = d.baslik;
+  document.getElementById('editDuaMetin').value = d.metin;
+  document.getElementById('editDuaRef').value = d.ref || '';
+  modalAc('modalDua');
+}
+
+async function duaGuncelle() {
+  const id = document.getElementById('editDuaId').value;
+  const baslik = document.getElementById('editDuaBaslik').value.trim();
+  const metin = document.getElementById('editDuaMetin').value.trim();
+  const ref = document.getElementById('editDuaRef').value.trim();
+  if (!baslik || !metin) { showToast('Başlık ve dua metni gerekli!'); return; }
+  const { error } = await sb.from('dualar').update({ baslik, metin, ref }).eq('id', id);
+  if (error) { showToast('Hata: ' + error.message); return; }
+  modalKapat('modalDua');
+  showToast('Dua güncellendi ✦');
+  loadDualar();
+  loadGecmis();
 }
 
 function filterGecmis(tip, btn) {
