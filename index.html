@@ -342,6 +342,51 @@
   }
   .plan-gun.tamamlandi { background: #1a2a1a; color: #7ec87e; border-color: #2a4a2a; }
   .plan-gun:hover:not(.tamamlandi) { border-color: var(--gold); color: var(--gold2); }
+
+  /* YÜKLEME KILAVUZU */
+  .install-modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
+  }
+  .install-modal-overlay.open { display: flex; }
+  .install-modal {
+    background: var(--navy2); border: 1px solid var(--navy4); border-radius: 16px;
+    padding: 24px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
+  }
+  .install-modal-title { font-size: 16px; color: var(--gold2); margin-bottom: 4px; font-weight: 500; }
+  .install-modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .install-tabs { display: flex; background: var(--navy3); border-radius: 10px; padding: 3px; margin-bottom: 18px; gap: 2px; }
+  .install-tab {
+    flex: 1; padding: 7px; border: none; background: none;
+    color: var(--text-muted); font-size: 12px; cursor: pointer;
+    border-radius: 7px; transition: all 0.2s; font-family: inherit;
+  }
+  .install-tab.active { background: var(--navy4); color: var(--gold2); }
+  .install-panel { display: none; }
+  .install-panel.active { display: block; }
+  .install-step {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--navy3); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+  }
+  .install-step-num {
+    min-width: 24px; height: 24px; background: var(--gold); color: var(--navy);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .install-step-text { font-size: 13px; color: var(--text-light); line-height: 1.5; }
+  .install-step-text strong { color: var(--gold2); }
+  .btn-install-close {
+    width: 100%; margin-top: 16px; background: var(--navy3); color: var(--text-muted);
+    border: 1px solid var(--navy4); padding: 10px; border-radius: 8px;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+  .btn-yukle {
+    background: none; border: 1px solid var(--navy4); color: var(--gold2);
+    padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
+    font-family: inherit; transition: all 0.2s; margin-right: 6px;
+  }
+  .btn-yukle:hover { border-color: var(--gold); }
+
 </style>
 </head>
 <body>
@@ -380,7 +425,7 @@
         <p id="userEmail"></p>
       </div>
     </div>
-    <button class="btn-signout" onclick="signOut()">Çıkış</button>
+    <button class="btn-yukle" onclick="installModalAc()">📲 Yükle</button><button class="btn-signout" onclick="signOut()">Çıkış</button>
   </div>
 
   <nav class="nav">
@@ -527,6 +572,80 @@
       <div id="gecmisListesi"><div class="loading">Yükleniyor...</div></div>
     </div>
 
+  </div>
+</div>
+
+
+<!-- YÜKLEME KILAVUZU MODALI -->
+<div class="install-modal-overlay" id="installModal">
+  <div class="install-modal">
+    <div class="install-modal-title">📲 Uygulamayı Yükle</div>
+    <div class="install-modal-sub">Cihazına göre adımları takip et</div>
+
+    <div class="install-tabs">
+      <button class="install-tab active" onclick="installTab('chrome')">💻 Chrome</button>
+      <button class="install-tab" onclick="installTab('android')">🤖 Android</button>
+      <button class="install-tab" onclick="installTab('ios')">🍎 iPhone/iPad</button>
+    </div>
+
+    <div class="install-panel active" id="install-chrome">
+      <div class="install-step">
+        <div class="install-step-num">1</div>
+        <div class="install-step-text">Chrome'da siteyi aç: <strong>kutsal-kitap-gunlugu.netlify.app</strong></div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">2</div>
+        <div class="install-step-text">Adres çubuğunun <strong>sağ tarafında</strong> bilgisayar ikonu veya yıldız ikonu çıkar</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">3</div>
+        <div class="install-step-text">O ikona tıkla, <strong>"Yükle"</strong> de</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">4</div>
+        <div class="install-step-text">Masaüstünde uygulama gibi açılır ✦</div>
+      </div>
+    </div>
+
+    <div class="install-panel" id="install-android">
+      <div class="install-step">
+        <div class="install-step-num">1</div>
+        <div class="install-step-text">Chrome ile siteyi aç</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">2</div>
+        <div class="install-step-text">Sağ üstteki <strong>üç nokta (⋮)</strong> menüsüne dokun</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">3</div>
+        <div class="install-step-text"><strong>"Ana ekrana ekle"</strong> veya <strong>"Uygulamayı yükle"</strong> de</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">4</div>
+        <div class="install-step-text">Onaylayınca ana ekranda ikon belirir ✦</div>
+      </div>
+    </div>
+
+    <div class="install-panel" id="install-ios">
+      <div class="install-step">
+        <div class="install-step-num">1</div>
+        <div class="install-step-text"><strong>Safari</strong> ile siteyi aç (Chrome ile çalışmaz)</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">2</div>
+        <div class="install-step-text">Alttaki menüde <strong>paylaş ikonu</strong>na dokun — kutu içinden yukarı ok gibi görünür</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">3</div>
+        <div class="install-step-text">Aşağı kaydır, <strong>"Ana Ekrana Ekle"</strong> de</div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">4</div>
+        <div class="install-step-text">Sağ üstten <strong>"Ekle"</strong> ye dokun, ana ekranda ikon belirir ✦</div>
+      </div>
+    </div>
+
+    <button class="btn-install-close" onclick="installModalKapat()">Kapat</button>
   </div>
 </div>
 
@@ -1098,6 +1217,16 @@ async function duaGuncelle() {
   showToast('Dua güncellendi ✦');
   loadDualar();
   loadGecmis();
+}
+
+
+function installModalAc() { document.getElementById('installModal').classList.add('open'); }
+function installModalKapat() { document.getElementById('installModal').classList.remove('open'); }
+function installTab(tab) {
+  document.querySelectorAll('.install-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.install-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('install-' + tab).classList.add('active');
 }
 
 function filterGecmis(tip, btn) {
