@@ -2,6 +2,12 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KK Günlüğü">
+<meta name="theme-color" content="#0d1b3e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kutsal Kitap Günlüğü</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1106,6 +1112,12 @@ document.addEventListener('keydown', e => {
     handleAuth();
   }
 });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
+}
 </script>
 </body>
 </html>
