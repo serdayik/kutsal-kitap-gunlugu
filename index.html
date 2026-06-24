@@ -425,7 +425,7 @@
         <p id="userEmail"></p>
       </div>
     </div>
-    <button class="btn-yukle" onclick="installModalAc()">📲 Yükle</button><button class="btn-signout" onclick="signOut()">Çıkış</button>
+    <button class="btn-yukle" onclick="wordIndir()">📄 İndir</button><button class="btn-yukle" onclick="installModalAc()">📲 Yükle</button><button class="btn-signout" onclick="signOut()">Çıkış</button>
   </div>
 
   <nav class="nav">
@@ -1219,6 +1219,93 @@ async function duaGuncelle() {
   loadGecmis();
 }
 
+
+
+async function wordIndir() {
+  showToast('Hazırlanıyor...');
+
+  const [ayetRes, journalRes, duaRes] = await Promise.all([
+    sb.from('ayetler').select('*').order('tarih', { ascending: false }),
+    sb.from('gunlukler').select('*').order('tarih', { ascending: false }),
+    sb.from('dualar').select('*').order('tarih', { ascending: false }),
+  ]);
+
+  const ayetler = ayetRes.data || [];
+  const gunlukler = journalRes.data || [];
+  const dualar = duaRes.data || [];
+
+  let html = `
+    <html><head><meta charset="UTF-8">
+    <style>
+      body { font-family: Georgia, serif; color: #1a1a2e; margin: 40px; line-height: 1.7; }
+      h1 { color: #c9a84c; font-size: 26px; border-bottom: 2px solid #c9a84c; padding-bottom: 8px; }
+      h2 { color: #162040; font-size: 20px; margin-top: 30px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+      h3 { color: #c9a84c; font-size: 15px; margin-bottom: 4px; }
+      .tarih { font-size: 12px; color: #888; margin-bottom: 6px; }
+      .metin { font-style: italic; margin-bottom: 6px; }
+      .not { font-size: 13px; color: #555; border-left: 3px solid #c9a84c; padding-left: 10px; }
+      .kart { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+      .bos { color: #999; font-style: italic; }
+    </style>
+    </head><body>
+    <h1>✦ Kutsal Kitap Günlüğü</h1>
+    <p class="tarih">İndirilme tarihi: ${new Date().toLocaleDateString('tr-TR')}</p>
+  `;
+
+  // AYETLERİM
+  html += '<h2>📖 Ayetlerim</h2>';
+  if (ayetler.length) {
+    ayetler.forEach(a => {
+      html += `<div class="kart">
+        <h3>${a.ref} <span style="font-size:11px;color:#888;">(${a.kitap === 'eskiahit' ? 'Eski Ahit' : 'Yeni Ahit'})</span></h3>
+        <div class="tarih">${new Date(a.tarih).toLocaleDateString('tr-TR')}</div>
+        <div class="metin">${a.metin}</div>
+        ${a.aciklama ? `<div class="not">${a.aciklama}</div>` : ''}
+      </div>`;
+    });
+  } else {
+    html += '<p class="bos">Henüz ayet eklenmemiş.</p>';
+  }
+
+  // GÜNLÜKLER
+  html += '<h2>📝 Günlüklerim</h2>';
+  if (gunlukler.length) {
+    gunlukler.forEach(j => {
+      html += `<div class="kart">
+        <h3>${j.baslik}</h3>
+        <div class="tarih">${new Date(j.tarih).toLocaleDateString('tr-TR')}${j.ref ? ' · ' + j.ref : ''}</div>
+        <div>${j.metin}</div>
+      </div>`;
+    });
+  } else {
+    html += '<p class="bos">Henüz günlük eklenmemiş.</p>';
+  }
+
+  // DUALAR
+  html += '<h2>🙏 Dualarım</h2>';
+  if (dualar.length) {
+    dualar.forEach(d => {
+      html += `<div class="kart">
+        <h3>${d.baslik}</h3>
+        <div class="tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}${d.ref ? ' · ' + d.ref : ''}</div>
+        <div>${d.metin}</div>
+      </div>`;
+    });
+  } else {
+    html += '<p class="bos">Henüz dua eklenmemiş.</p>';
+  }
+
+  html += '</body></html>';
+
+  const blob = new Blob([html], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kutsal-kitap-gunlugum.doc';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('İndirildi ✦');
+}
 
 function installModalAc() { document.getElementById('installModal').classList.add('open'); }
 function installModalKapat() { document.getElementById('installModal').classList.remove('open'); }
