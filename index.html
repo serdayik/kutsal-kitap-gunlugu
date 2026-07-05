@@ -918,7 +918,7 @@ async function loadDualar() {
   const el = document.getElementById('duaListesi');
   const { data, error } = await sb.from('dualar').select('*').order('tarih', { ascending: false });
   if (error || !data.length) {
-    el.innerHTML = '<div class="empty-state"><span class="icon">🙏</span>Henüz dua notu eklemedins.</div>';
+    el.innerHTML = '<div class="empty-state"><span class="icon">🙏</span>Henüz dua notu eklemedin.</div>';
     return;
   }
   el.innerHTML = data.map(d => `
