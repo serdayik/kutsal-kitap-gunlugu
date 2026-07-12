@@ -13,385 +13,138 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --navy: #0d1b3e;
-    --navy2: #162040;
-    --navy3: #1e2d56;
-    --navy4: #243268;
-    --gold: #c9a84c;
-    --gold2: #e0c068;
-    --gold3: #f5e4a8;
-    --cream: #f8f4e8;
-    --text-light: #f0e8d0;
-    --text-muted: #a89870;
+    --navy: #0d1b3e; --navy2: #162040; --navy3: #1e2d56; --navy4: #243268;
+    --gold: #c9a84c; --gold2: #e0c068; --gold3: #f5e4a8; --cream: #f8f4e8;
+    --text-light: #f0e8d0; --text-muted: #a89870;
   }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0a1020;
-    min-height: 100vh;
-    color: var(--text-light);
-  }
-
-  /* AUTH */
-  #authScreen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .auth-card {
-    background: var(--navy2);
-    border: 1px solid var(--navy4);
-    border-radius: 20px;
-    padding: 40px;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-
-  .auth-logo {
-    width: 60px; height: 60px;
-    background: var(--gold);
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; color: var(--navy);
-    margin: 0 auto 20px; font-weight: 700;
-  }
-
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a1020; min-height: 100vh; color: var(--text-light); }
+  #authScreen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .auth-card { background: var(--navy2); border: 1px solid var(--navy4); border-radius: 20px; padding: 40px; width: 100%; max-width: 400px; text-align: center; }
+  .auth-logo { width: 60px; height: 60px; background: var(--gold); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--navy); margin: 0 auto 20px; font-weight: 700; }
   .auth-card h1 { font-size: 22px; color: var(--gold2); margin-bottom: 6px; font-weight: 500; }
   .auth-card > p { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
-
-  .auth-tabs {
-    display: flex; background: var(--navy3);
-    border-radius: 10px; padding: 4px; margin-bottom: 20px;
-  }
-
-  .auth-tab {
-    flex: 1; padding: 8px; border: none; background: none;
-    color: var(--text-muted); font-size: 13px; cursor: pointer;
-    border-radius: 7px; transition: all 0.2s; font-family: inherit;
-  }
-
+  .auth-tabs { display: flex; background: var(--navy3); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+  .auth-tab { flex: 1; padding: 8px; border: none; background: none; color: var(--text-muted); font-size: 13px; cursor: pointer; border-radius: 7px; transition: all 0.2s; font-family: inherit; }
   .auth-tab.active { background: var(--navy4); color: var(--gold2); }
-
   .form-group { margin-bottom: 14px; text-align: left; }
   .form-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; }
-
-  .form-input {
-    width: 100%; background: var(--navy3); border: 1px solid var(--navy4);
-    border-radius: 8px; padding: 10px 12px; color: var(--text-light);
-    font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s;
-  }
+  .form-input { width: 100%; background: var(--navy3); border: 1px solid var(--navy4); border-radius: 8px; padding: 10px 12px; color: var(--text-light); font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
   .form-input:focus { border-color: var(--gold); }
-
-  .btn-primary {
-    width: 100%; background: var(--gold); color: var(--navy); border: none;
-    padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 600;
-    cursor: pointer; font-family: inherit; transition: opacity 0.2s; margin-top: 4px;
-  }
+  .btn-primary { width: 100%; background: var(--gold); color: var(--navy); border: none; padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.2s; margin-top: 4px; }
   .btn-primary:hover { opacity: 0.88; }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .auth-error {
-    background: #3a1a1a; border: 1px solid #6a2a2a; color: #f09595;
-    padding: 10px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 14px; display: none;
-  }
-  .auth-success {
-    background: #1a3a1a; border: 1px solid #2a6a2a; color: #97c459;
-    padding: 10px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 14px; display: none;
-  }
-
-  /* ANA UYGULAMA */
+  .auth-error { background: #3a1a1a; border: 1px solid #6a2a2a; color: #f09595; padding: 10px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 14px; display: none; }
+  .auth-success { background: #1a3a1a; border: 1px solid #2a6a2a; color: #97c459; padding: 10px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 14px; display: none; }
   #app { display: none; max-width: 800px; margin: 0 auto; padding: 0 0 40px; }
-
-  .header {
-    background: var(--navy2); border-bottom: 1px solid var(--navy4);
-    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-  }
-
+  .header { background: var(--navy2); border-bottom: 1px solid var(--navy4); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .header-title { display: flex; align-items: center; gap: 10px; }
-
-  .logo {
-    width: 34px; height: 34px; background: var(--gold); border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; color: var(--navy); font-weight: 700;
-  }
-
+  .logo { width: 34px; height: 34px; background: var(--gold); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--navy); font-weight: 700; }
   .header-title h1 { font-size: 15px; font-weight: 500; color: var(--gold2); }
   .header-title p { font-size: 11px; color: var(--text-muted); }
-
-  .btn-signout {
-    background: none; border: 1px solid var(--navy4); color: var(--text-muted);
-    padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
-    font-family: inherit; transition: all 0.2s;
-  }
+  .btn-signout { background: none; border: 1px solid var(--navy4); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
   .btn-signout:hover { border-color: var(--gold); color: var(--gold2); }
-
-  .nav {
-    background: var(--navy2); border-bottom: 1px solid var(--navy4);
-    display: flex; padding: 0 16px; gap: 2px; overflow-x: auto;
-  }
-
-  .nav-btn {
-    background: none; border: none; color: var(--text-muted); padding: 10px 14px;
-    font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent;
-    margin-bottom: -1px; transition: all 0.2s; white-space: nowrap; font-family: inherit;
-  }
+  .nav { background: var(--navy2); border-bottom: 1px solid var(--navy4); display: flex; padding: 0 16px; gap: 2px; overflow-x: auto; }
+  .nav-btn { background: none; border: none; color: var(--text-muted); padding: 10px 14px; font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
   .nav-btn.active { color: var(--gold2); border-bottom-color: var(--gold); }
   .nav-btn:hover:not(.active) { color: var(--text-light); }
-
   .content { padding: 20px 16px; }
   .section { display: none; }
   .section.active { display: block; }
-
-  /* KARTLAR */
-  .write-card {
-    background: var(--navy2); border: 1px solid var(--navy4);
-    border-radius: 14px; padding: 16px; margin-bottom: 16px;
-  }
-
+  .write-card { background: var(--navy2); border: 1px solid var(--navy4); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
   .section-title { font-size: 13px; color: var(--gold); letter-spacing: 0.5px; margin-bottom: 14px; }
-
-  .question-item {
-    background: var(--navy3); border-radius: 10px; padding: 12px 14px;
-    margin-bottom: 10px; border-left: 3px solid var(--gold);
-  }
-  .question-text { font-size: 13px; color: var(--text-light); margin-bottom: 8px; line-height: 1.5; }
-
-  .form-textarea {
-    width: 100%; background: var(--navy2); border: 1px solid var(--navy4);
-    border-radius: 8px; padding: 8px 10px; color: var(--text-light);
-    font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px;
-    outline: none; transition: border-color 0.2s;
-  }
+  .form-textarea { width: 100%; background: var(--navy2); border: 1px solid var(--navy4); border-radius: 8px; padding: 8px 10px; color: var(--text-light); font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px; outline: none; transition: border-color 0.2s; }
   .form-textarea:focus { border-color: var(--gold); }
-
-  .form-select {
-    width: 100%; background: var(--navy3); border: 1px solid var(--navy4);
-    border-radius: 8px; padding: 9px 12px; color: var(--text-light);
-    font-size: 13px; font-family: inherit; outline: none;
-  }
+  .form-select { width: 100%; background: var(--navy3); border: 1px solid var(--navy4); border-radius: 8px; padding: 9px 12px; color: var(--text-light); font-size: 13px; font-family: inherit; outline: none; }
   .form-select option { background: var(--navy2); }
-
-  .btn {
-    background: var(--gold); color: var(--navy); border: none; padding: 9px 18px;
-    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
-    font-family: inherit; transition: opacity 0.2s;
-  }
+  .btn { background: var(--gold); color: var(--navy); border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.2s; }
   .btn:hover { opacity: 0.88; }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .btn-outline {
-    background: none; color: var(--gold2); border: 1px solid var(--gold);
-    padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer;
-    font-family: inherit; transition: all 0.2s;
-  }
-  .btn-outline:hover { background: var(--navy4); }
-
-  .btn-danger {
-    background: none; color: #f09595; border: none;
-    padding: 4px 6px; border-radius: 6px; font-size: 15px; cursor: pointer;
-    transition: opacity 0.2s; line-height: 1;
-  }
+  .btn-danger { background: none; color: #f09595; border: none; padding: 4px 6px; border-radius: 6px; font-size: 15px; cursor: pointer; transition: opacity 0.2s; line-height: 1; }
   .btn-danger:hover { opacity: 0.7; }
-
   .ikon-buton-grup { display: flex; gap: 4px; align-items: center; }
-  .btn-edit {
-    background: none; color: var(--gold2); border: none;
-    padding: 4px 6px; border-radius: 6px; font-size: 15px; cursor: pointer;
-    transition: opacity 0.2s; line-height: 1;
-  }
+  .btn-edit { background: none; color: var(--gold2); border: none; padding: 4px 6px; border-radius: 6px; font-size: 15px; cursor: pointer; transition: opacity 0.2s; line-height: 1; }
   .btn-edit:hover { opacity: 0.7; }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
-  }
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--navy2); border: 1px solid var(--navy4); border-radius: 16px;
-    padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-  }
+  .modal { background: var(--navy2); border: 1px solid var(--navy4); border-radius: 16px; padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
   .modal-title { font-size: 15px; color: var(--gold2); margin-bottom: 16px; font-weight: 500; }
   .modal-btn-row { display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end; }
-  .btn-cancel {
-    background: none; color: var(--text-muted); border: 1px solid var(--navy4);
-    padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit;
-  }
-
-  .btn-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-
+  .btn-cancel { background: none; color: var(--text-muted); border: 1px solid var(--navy4); padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
   .fg { margin-bottom: 12px; }
   .fl { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; display: block; }
-
-  .fi {
-    width: 100%; background: var(--navy3); border: 1px solid var(--navy4);
-    border-radius: 8px; padding: 9px 12px; color: var(--text-light);
-    font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.2s;
-  }
+  .fi { width: 100%; background: var(--navy3); border: 1px solid var(--navy4); border-radius: 8px; padding: 9px 12px; color: var(--text-light); font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.2s; }
   .fi:focus { border-color: var(--gold); }
-
   .divider { height: 1px; background: var(--navy4); margin: 16px 0; }
-
-  .verse-card-item {
-    background: var(--navy3); border: 1px solid var(--navy4); border-radius: 12px;
-    padding: 14px 16px; margin-bottom: 10px; border-left: 3px solid var(--gold);
-  }
-
-  .verse-card-ref {
-    font-size: 12px; color: var(--gold2); font-weight: 500; margin-bottom: 5px;
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  }
-
+  .verse-card-item { background: var(--navy3); border: 1px solid var(--navy4); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border-left: 3px solid var(--gold); }
+  .verse-card-ref { font-size: 12px; color: var(--gold2); font-weight: 500; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .verse-card-text { font-size: 13px; color: var(--cream); line-height: 1.6; margin-bottom: 6px; font-style: italic; }
-
-  .verse-card-note {
-    font-size: 12px; color: var(--text-muted); line-height: 1.5;
-    padding-top: 6px; border-top: 1px solid var(--navy4); margin-top: 4px;
-  }
-
+  .verse-card-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; padding-top: 6px; border-top: 1px solid var(--navy4); margin-top: 4px; }
   .kitap-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; }
   .kitap-badge.eskiahit { background: #1a2a1a; color: #7ec87e; border: 1px solid #2a4a2a; }
   .kitap-badge.yeniahit { background: #2a1a1a; color: #c87e7e; border: 1px solid #4a2a2a; }
-
-  .journal-card {
-    background: var(--navy3); border: 1px solid var(--navy4);
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
-  }
+  .journal-card { background: var(--navy3); border: 1px solid var(--navy4); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
   .journal-date { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
   .journal-title { font-size: 14px; color: var(--gold2); font-weight: 500; margin-bottom: 5px; }
   .journal-preview { font-size: 12px; color: var(--text-light); line-height: 1.5; opacity: 0.8; }
-
   .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-
-  .filter-btn {
-    background: var(--navy3); border: 1px solid var(--navy4); color: var(--text-muted);
-    padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
-    font-family: inherit; transition: all 0.2s;
-  }
+  .filter-btn { background: var(--navy3); border: 1px solid var(--navy4); color: var(--text-muted); padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
   .filter-btn.active { background: var(--navy4); color: var(--gold2); border-color: var(--gold); }
-
   .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px; line-height: 2; }
   .empty-state .icon { font-size: 36px; display: block; margin-bottom: 10px; }
-
-  .toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--gold); color: var(--navy); padding: 10px 20px;
-    border-radius: 20px; font-size: 13px; font-weight: 600;
-    transition: transform 0.3s; z-index: 9999; pointer-events: none;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--gold); color: var(--navy); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; transition: transform 0.3s; z-index: 9999; pointer-events: none; }
   .toast.show { transform: translateX(-50%) translateY(0); }
-
   .loading { text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px; }
-
   .tarih-kucuk { margin-left: auto; font-size: 11px; color: var(--text-muted); }
-
-  /* ARAMA */
-  .search-box {
-    display: flex; gap: 8px; margin-bottom: 16px;
-  }
-  .search-input {
-    flex: 1; background: var(--navy3); border: 1px solid var(--navy4);
-    border-radius: 8px; padding: 10px 14px; color: var(--text-light);
-    font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s;
-  }
+  .search-box { display: flex; gap: 8px; margin-bottom: 16px; }
+  .search-input { flex: 1; background: var(--navy3); border: 1px solid var(--navy4); border-radius: 8px; padding: 10px 14px; color: var(--text-light); font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
   .search-input:focus { border-color: var(--gold); }
-  .search-result-label {
-    font-size: 11px; color: var(--text-muted); margin-bottom: 10px; padding: 0 2px;
-  }
-
-  /* DUA */
-  .dua-soru-listesi { margin-bottom: 14px; }
-  .dua-soru-item {
-    background: var(--navy3); border-radius: 8px; padding: 10px 14px;
-    margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  }
-  .dua-soru-text { font-size: 13px; color: var(--text-light); line-height: 1.4; flex: 1; }
-
-  .dua-card {
-    background: var(--navy3); border: 1px solid var(--navy4); border-left: 3px solid #7e7ec8;
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
-  }
+  .search-result-label { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; padding: 0 2px; }
+  .dua-card { background: var(--navy3); border: 1px solid var(--navy4); border-left: 3px solid #7e7ec8; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
   .dua-card-baslik { font-size: 14px; color: var(--gold2); font-weight: 500; margin-bottom: 4px; }
   .dua-card-metin { font-size: 13px; color: var(--text-light); line-height: 1.5; opacity: 0.85; }
   .dua-card-tarih { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
-
-  /* OKUMA PLANI */
-  .plan-card {
-    background: var(--navy3); border: 1px solid var(--navy4); border-left: 3px solid var(--gold2);
-    border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
-  }
+  .plan-card { background: var(--navy3); border: 1px solid var(--navy4); border-left: 3px solid var(--gold2); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
   .plan-baslik { font-size: 14px; color: var(--gold2); font-weight: 500; margin-bottom: 4px; }
   .plan-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-  .plan-progress-bar {
-    background: var(--navy4); border-radius: 10px; height: 6px; margin-bottom: 8px; overflow: hidden;
-  }
+  .plan-progress-bar { background: var(--navy4); border-radius: 10px; height: 6px; margin-bottom: 8px; overflow: hidden; }
   .plan-progress-fill { background: var(--gold); height: 100%; border-radius: 10px; transition: width 0.3s; }
   .plan-gunler { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .plan-gun {
-    background: var(--navy4); border-radius: 6px; padding: 4px 10px;
-    font-size: 11px; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
-    border: 1px solid transparent;
-  }
+  .plan-gun { background: var(--navy4); border-radius: 6px; padding: 4px 10px; font-size: 11px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
   .plan-gun.tamamlandi { background: #1a2a1a; color: #7ec87e; border-color: #2a4a2a; }
   .plan-gun:hover:not(.tamamlandi) { border-color: var(--gold); color: var(--gold2); }
-
-  /* YÜKLEME KILAVUZU */
-  .install-modal-overlay {
-    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px;
-  }
+  .install-modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
   .install-modal-overlay.open { display: flex; }
-  .install-modal {
-    background: var(--navy2); border: 1px solid var(--navy4); border-radius: 16px;
-    padding: 24px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
-  }
+  .install-modal { background: var(--navy2); border: 1px solid var(--navy4); border-radius: 16px; padding: 24px; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; }
   .install-modal-title { font-size: 16px; color: var(--gold2); margin-bottom: 4px; font-weight: 500; }
   .install-modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
   .install-tabs { display: flex; background: var(--navy3); border-radius: 10px; padding: 3px; margin-bottom: 18px; gap: 2px; }
-  .install-tab {
-    flex: 1; padding: 7px; border: none; background: none;
-    color: var(--text-muted); font-size: 12px; cursor: pointer;
-    border-radius: 7px; transition: all 0.2s; font-family: inherit;
-  }
+  .install-tab { flex: 1; padding: 7px; border: none; background: none; color: var(--text-muted); font-size: 12px; cursor: pointer; border-radius: 7px; transition: all 0.2s; font-family: inherit; }
   .install-tab.active { background: var(--navy4); color: var(--gold2); }
   .install-panel { display: none; }
   .install-panel.active { display: block; }
-  .install-step {
-    display: flex; gap: 12px; align-items: flex-start;
-    background: var(--navy3); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
-  }
-  .install-step-num {
-    min-width: 24px; height: 24px; background: var(--gold); color: var(--navy);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700;
-  }
+  .install-step { display: flex; gap: 12px; align-items: flex-start; background: var(--navy3); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .install-step-num { min-width: 24px; height: 24px; background: var(--gold); color: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
   .install-step-text { font-size: 13px; color: var(--text-light); line-height: 1.5; }
   .install-step-text strong { color: var(--gold2); }
-  .btn-install-close {
-    width: 100%; margin-top: 16px; background: var(--navy3); color: var(--text-muted);
-    border: 1px solid var(--navy4); padding: 10px; border-radius: 8px;
-    font-size: 13px; cursor: pointer; font-family: inherit;
-  }
-  .btn-yukle {
-    background: none; border: 1px solid var(--navy4); color: var(--gold2);
-    padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
-    font-family: inherit; transition: all 0.2s; margin-right: 6px;
-  }
+  .btn-install-close { width: 100%; margin-top: 16px; background: var(--navy3); color: var(--text-muted); border: 1px solid var(--navy4); padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
+  .btn-yukle { background: none; border: 1px solid var(--navy4); color: var(--gold2); padding: 6px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; margin-right: 6px; }
   .btn-yukle:hover { border-color: var(--gold); }
 
+  /* GÖRSEL EKLEME */
+  .gorsel-yukle-alani {
+    border: 2px dashed var(--navy4); border-radius: 8px; padding: 12px;
+    text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 12px;
+  }
+  .gorsel-yukle-alani:hover { border-color: var(--gold); }
+  .gorsel-yukle-alani input { display: none; }
+  .gorsel-yukle-label { font-size: 12px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .gorsel-onizleme { width: 100%; border-radius: 8px; margin-top: 8px; max-height: 200px; object-fit: cover; display: none; }
+  .journal-gorsel { width: 100%; border-radius: 8px; margin-top: 8px; max-height: 300px; object-fit: cover; }
 </style>
 </head>
 <body>
 
-<!-- AUTH EKRANI -->
 <div id="authScreen">
   <div class="auth-card">
     <div class="auth-logo">✦</div>
@@ -415,7 +168,6 @@
   </div>
 </div>
 
-<!-- ANA UYGULAMA -->
 <div id="app">
   <div class="header">
     <div class="header-title">
@@ -485,6 +237,16 @@
           <label class="fl">Yazın</label>
           <textarea class="form-textarea" id="journalMetin" placeholder="Bugün okuduğun pasajla ilgili düşüncelerini yaz..." style="min-height:130px;"></textarea>
         </div>
+        <div class="fg">
+          <label class="fl">Görsel Ekle (opsiyonel)</label>
+          <div class="gorsel-yukle-alani" onclick="document.getElementById('journalGorsel').click()">
+            <label class="gorsel-yukle-label">
+              📎 Görsel seç veya buraya tıkla
+            </label>
+            <input type="file" id="journalGorsel" accept="image/*" onchange="gorselOnizle(this)" />
+            <img id="gorselOnizleme" class="gorsel-onizleme" />
+          </div>
+        </div>
         <button class="btn" onclick="journalEkle()">Günlüğü Kaydet</button>
       </div>
       <div class="divider"></div>
@@ -496,7 +258,6 @@
     <div class="section" id="sec-dua">
       <div class="write-card">
         <div class="section-title">Yeni Dua Ekle</div>
-
         <div style="background:var(--navy3);border-radius:10px;padding:14px;margin-bottom:14px;">
           <div style="font-size:12px;color:var(--gold);margin-bottom:10px;">Duanda düşünmek isteyebileceğin sorular:</div>
           <div style="font-size:12px;color:var(--text-muted);line-height:2;">
@@ -507,7 +268,6 @@
             • Tanrı bu hafta sana ne öğretti?
           </div>
         </div>
-
         <div class="fg">
           <label class="fl">Başlık</label>
           <input class="fi" id="duaBaslik" placeholder="Örn: Şükran duası, Güç için dua..." />
@@ -575,76 +335,34 @@
   </div>
 </div>
 
-
-<!-- YÜKLEME KILAVUZU MODALI -->
+<!-- YÜKLEME KILAVUZU -->
 <div class="install-modal-overlay" id="installModal">
   <div class="install-modal">
     <div class="install-modal-title">📲 Uygulamayı Yükle</div>
     <div class="install-modal-sub">Cihazına göre adımları takip et</div>
-
     <div class="install-tabs">
       <button class="install-tab active" onclick="installTab('chrome')">💻 Chrome</button>
       <button class="install-tab" onclick="installTab('android')">🤖 Android</button>
       <button class="install-tab" onclick="installTab('ios')">🍎 iPhone/iPad</button>
     </div>
-
     <div class="install-panel active" id="install-chrome">
-      <div class="install-step">
-        <div class="install-step-num">1</div>
-        <div class="install-step-text">Chrome'da siteyi aç: <strong>kutsal-kitap-gunlugu.netlify.app</strong></div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">2</div>
-        <div class="install-step-text">Adres çubuğunun <strong>sağ tarafında</strong> bilgisayar ikonu veya yıldız ikonu çıkar</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">3</div>
-        <div class="install-step-text">O ikona tıkla, <strong>"Yükle"</strong> de</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">4</div>
-        <div class="install-step-text">Masaüstünde uygulama gibi açılır ✦</div>
-      </div>
+      <div class="install-step"><div class="install-step-num">1</div><div class="install-step-text">Chrome'da siteyi aç: <strong>kutsalkitapgunlugu.com</strong></div></div>
+      <div class="install-step"><div class="install-step-num">2</div><div class="install-step-text">Adres çubuğunun <strong>sağ tarafında</strong> bilgisayar ikonu çıkar</div></div>
+      <div class="install-step"><div class="install-step-num">3</div><div class="install-step-text">O ikona tıkla, <strong>"Yükle"</strong> de</div></div>
+      <div class="install-step"><div class="install-step-num">4</div><div class="install-step-text">Masaüstünde uygulama gibi açılır ✦</div></div>
     </div>
-
     <div class="install-panel" id="install-android">
-      <div class="install-step">
-        <div class="install-step-num">1</div>
-        <div class="install-step-text">Chrome ile siteyi aç</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">2</div>
-        <div class="install-step-text">Sağ üstteki <strong>üç nokta (⋮)</strong> menüsüne dokun</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">3</div>
-        <div class="install-step-text"><strong>"Ana ekrana ekle"</strong> veya <strong>"Uygulamayı yükle"</strong> de</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">4</div>
-        <div class="install-step-text">Onaylayınca ana ekranda ikon belirir ✦</div>
-      </div>
+      <div class="install-step"><div class="install-step-num">1</div><div class="install-step-text">Chrome ile siteyi aç</div></div>
+      <div class="install-step"><div class="install-step-num">2</div><div class="install-step-text">Sağ üstteki <strong>üç nokta (⋮)</strong> menüsüne dokun</div></div>
+      <div class="install-step"><div class="install-step-num">3</div><div class="install-step-text"><strong>"Ana ekrana ekle"</strong> veya <strong>"Uygulamayı yükle"</strong> de</div></div>
+      <div class="install-step"><div class="install-step-num">4</div><div class="install-step-text">Onaylayınca ana ekranda ikon belirir ✦</div></div>
     </div>
-
     <div class="install-panel" id="install-ios">
-      <div class="install-step">
-        <div class="install-step-num">1</div>
-        <div class="install-step-text"><strong>Safari</strong> ile siteyi aç (Chrome ile çalışmaz)</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">2</div>
-        <div class="install-step-text">Alttaki menüde <strong>paylaş ikonu</strong>na dokun — kutu içinden yukarı ok gibi görünür</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">3</div>
-        <div class="install-step-text">Aşağı kaydır, <strong>"Ana Ekrana Ekle"</strong> de</div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">4</div>
-        <div class="install-step-text">Sağ üstten <strong>"Ekle"</strong> ye dokun, ana ekranda ikon belirir ✦</div>
-      </div>
+      <div class="install-step"><div class="install-step-num">1</div><div class="install-step-text"><strong>Safari</strong> ile siteyi aç (Chrome ile çalışmaz)</div></div>
+      <div class="install-step"><div class="install-step-num">2</div><div class="install-step-text">Alttaki menüde <strong>paylaş ikonu</strong>na dokun</div></div>
+      <div class="install-step"><div class="install-step-num">3</div><div class="install-step-text">Aşağı kaydır, <strong>"Ana Ekrana Ekle"</strong> de</div></div>
+      <div class="install-step"><div class="install-step-num">4</div><div class="install-step-text">Sağ üstten <strong>"Ekle"</strong> ye dokun ✦</div></div>
     </div>
-
     <button class="btn-install-close" onclick="installModalKapat()">Kapat</button>
   </div>
 </div>
@@ -703,15 +421,14 @@
 <script>
 const SUPABASE_URL = 'https://jqmddsnmhxmckrbcxcvt.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpxbWRkc25taHhtY2tyYmN4Y3Z0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2OTgyMTAsImV4cCI6MjA5NzI3NDIxMH0.IHe0-RNjlTonFP0J0cDJ7wtUPPAYl0rCHD3ecu5ufm0';
-
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentFilter = 'hepsi';
 let authMode = 'giris';
 let aramaTimeout = null;
+let secilenGorsel = null;
 
-// AUTH
 function switchAuthTab(mode) {
   authMode = mode;
   document.querySelectorAll('.auth-tab').forEach((t, i) => {
@@ -769,15 +486,10 @@ sb.auth.onAuthStateChange((event, session) => {
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('userEmail').textContent = session.user.email;
-    loadAyetler();
-    loadJournals();
-    loadDualar();
-    loadPlanlar();
-    loadGecmis();
+    loadAyetler(); loadJournals(); loadDualar(); loadPlanlar(); loadGecmis();
   }
 });
 
-// NAVİGASYON
 function showTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -805,17 +517,14 @@ async function ayetEkle() {
   document.getElementById('ayetMetin').value = '';
   document.getElementById('ayetNot').value = '';
   showToast('Ayet kaydedildi ✦');
-  loadAyetler();
-  loadGecmis();
+  loadAyetler(); loadGecmis();
 }
 
 async function ayetSil(id) {
   if (!confirm('Bu ayeti silmek istediğine emin misin?')) return;
-  const { error } = await sb.from('ayetler').delete().eq('id', id);
-  if (error) { showToast('Hata: ' + error.message); return; }
+  await sb.from('ayetler').delete().eq('id', id);
   showToast('Ayet silindi.');
-  loadAyetler();
-  loadGecmis();
+  loadAyetler(); loadGecmis();
 }
 
 async function loadAyetler() {
@@ -828,7 +537,7 @@ async function loadAyetler() {
   el.innerHTML = data.map(a => `
     <div class="verse-card-item">
       <div class="verse-card-ref">
-        <span class="kitap-badge ${a.kitap}">${a.kitap.charAt(0).toUpperCase() + a.kitap.slice(1)}</span>
+        <span class="kitap-badge ${a.kitap}">${a.kitap === 'eskiahit' ? 'Eski Ahit' : 'Yeni Ahit'}</span>
         ${a.ref}
         <span class="tarih-kucuk">${new Date(a.tarih).toLocaleDateString('tr-TR')}</span>
         <div class="ikon-buton-grup">
@@ -842,29 +551,65 @@ async function loadAyetler() {
   `).join('');
 }
 
+// GÖRSEL
+function gorselOnizle(input) {
+  const file = input.files[0];
+  if (!file) return;
+  secilenGorsel = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('gorselOnizleme');
+    img.src = e.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function gorselYukle() {
+  if (!secilenGorsel) return null;
+  const session = await sb.auth.getSession();
+  const userId = session.data.session.user.id;
+  const dosyaAdi = `${userId}/${Date.now()}_${secilenGorsel.name}`;
+  const { data, error } = await sb.storage.from('gorseller').upload(dosyaAdi, secilenGorsel);
+  if (error) { showToast('Görsel yüklenemedi: ' + error.message); return null; }
+  const { data: urlData } = sb.storage.from('gorseller').getPublicUrl(dosyaAdi);
+  return urlData.publicUrl;
+}
+
 // GÜNLÜK
 async function journalEkle() {
   const baslik = document.getElementById('journalBaslik').value.trim();
   const metin = document.getElementById('journalMetin').value.trim();
   const ref = document.getElementById('journalRef').value.trim();
   if (!baslik || !metin) { showToast('Başlık ve yazı gerekli!'); return; }
-  const { error } = await sb.from('gunlukler').insert({ baslik, metin, ref });
+
+  let gorselUrl = null;
+  if (secilenGorsel) {
+    showToast('Görsel yükleniyor...');
+    gorselUrl = await gorselYukle();
+  }
+
+  const { error } = await sb.from('gunlukler').insert({ baslik, metin, ref, gorsel_url: gorselUrl });
   if (error) { showToast('Hata: ' + error.message); return; }
   document.getElementById('journalBaslik').value = '';
   document.getElementById('journalMetin').value = '';
   document.getElementById('journalRef').value = '';
+  document.getElementById('journalGorsel').value = '';
+  document.getElementById('gorselOnizleme').style.display = 'none';
+  secilenGorsel = null;
   showToast('Günlük kaydedildi ✦');
-  loadJournals();
-  loadGecmis();
+  loadJournals(); loadGecmis();
 }
 
-async function journalSil(id) {
+async function journalSil(id, gorselUrl) {
   if (!confirm('Bu günlüğü silmek istediğine emin misin?')) return;
-  const { error } = await sb.from('gunlukler').delete().eq('id', id);
-  if (error) { showToast('Hata: ' + error.message); return; }
+  if (gorselUrl) {
+    const path = gorselUrl.split('/gorseller/')[1];
+    if (path) await sb.storage.from('gorseller').remove([path]);
+  }
+  await sb.from('gunlukler').delete().eq('id', id);
   showToast('Günlük silindi.');
-  loadJournals();
-  loadGecmis();
+  loadJournals(); loadGecmis();
 }
 
 async function loadJournals() {
@@ -880,11 +625,12 @@ async function loadJournals() {
         <span>${new Date(j.tarih).toLocaleDateString('tr-TR')}${j.ref ? ' · ' + j.ref : ''}</span>
         <div class="ikon-buton-grup">
           <button class="btn-edit" onclick="journalDuzenle(${JSON.stringify(j).replace(/"/g, '&quot;')})" title="Düzenle">✏️</button>
-          <button class="btn-danger" onclick="journalSil('${j.id}')" title="Sil">🗑️</button>
+          <button class="btn-danger" onclick="journalSil('${j.id}', '${j.gorsel_url || ''}')" title="Sil">🗑️</button>
         </div>
       </div>
       <div class="journal-title">${j.baslik}</div>
       <div class="journal-preview">${j.metin.slice(0, 150)}${j.metin.length > 150 ? '...' : ''}</div>
+      ${j.gorsel_url ? `<img src="${j.gorsel_url}" class="journal-gorsel" />` : ''}
     </div>
   `).join('');
 }
@@ -901,17 +647,14 @@ async function duaEkle() {
   document.getElementById('duaMetin').value = '';
   document.getElementById('duaRef').value = '';
   showToast('Dua kaydedildi ✦');
-  loadDualar();
-  loadGecmis();
+  loadDualar(); loadGecmis();
 }
 
 async function duaSil(id) {
   if (!confirm('Bu duayı silmek istediğine emin misin?')) return;
-  const { error } = await sb.from('dualar').delete().eq('id', id);
-  if (error) { showToast('Hata: ' + error.message); return; }
+  await sb.from('dualar').delete().eq('id', id);
   showToast('Dua silindi.');
-  loadDualar();
-  loadGecmis();
+  loadDualar(); loadGecmis();
 }
 
 async function loadDualar() {
@@ -944,8 +687,7 @@ async function planEkle() {
   const gunSayisi = parseInt(document.getElementById('planGunSayisi').value);
   const aciklama = document.getElementById('planAciklama').value.trim();
   if (!baslik || !gunSayisi || gunSayisi < 1) { showToast('Plan adı ve gün sayısı gerekli!'); return; }
-  const tamamlananGunler = [];
-  const { error } = await sb.from('okuma_planlari').insert({ baslik, gun_sayisi: gunSayisi, aciklama, tamamlanan_gunler: tamamlananGunler });
+  const { error } = await sb.from('okuma_planlari').insert({ baslik, gun_sayisi: gunSayisi, aciklama, tamamlanan_gunler: [] });
   if (error) { showToast('Hata: ' + error.message); return; }
   document.getElementById('planBaslik').value = '';
   document.getElementById('planGunSayisi').value = '';
@@ -956,20 +698,15 @@ async function planEkle() {
 
 async function gunToggle(planId, gunNo, mevcutTamamlananlar) {
   let yeniListe = [...mevcutTamamlananlar];
-  if (yeniListe.includes(gunNo)) {
-    yeniListe = yeniListe.filter(g => g !== gunNo);
-  } else {
-    yeniListe.push(gunNo);
-  }
-  const { error } = await sb.from('okuma_planlari').update({ tamamlanan_gunler: yeniListe }).eq('id', planId);
-  if (error) { showToast('Hata: ' + error.message); return; }
+  if (yeniListe.includes(gunNo)) { yeniListe = yeniListe.filter(g => g !== gunNo); }
+  else { yeniListe.push(gunNo); }
+  await sb.from('okuma_planlari').update({ tamamlanan_gunler: yeniListe }).eq('id', planId);
   loadPlanlar();
 }
 
 async function planSil(id) {
   if (!confirm('Bu planı silmek istediğine emin misin?')) return;
-  const { error } = await sb.from('okuma_planlari').delete().eq('id', id);
-  if (error) { showToast('Hata: ' + error.message); return; }
+  await sb.from('okuma_planlari').delete().eq('id', id);
   showToast('Plan silindi.');
   loadPlanlar();
 }
@@ -995,19 +732,11 @@ async function loadPlanlar() {
           <button class="btn-danger" onclick="planSil('${p.id}')" title="Sil">🗑️</button>
         </div>
         ${p.aciklama ? `<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">${p.aciklama}</div>` : ''}
-        <div class="plan-progress-bar">
-          <div class="plan-progress-fill" style="width:${yuzde}%"></div>
-        </div>
+        <div class="plan-progress-bar"><div class="plan-progress-fill" style="width:${yuzde}%"></div></div>
         <div class="plan-gunler">
-          ${gunler.map(g => `
-            <button class="plan-gun ${tamamlanan.includes(g) ? 'tamamlandi' : ''}"
-              onclick="gunToggle('${p.id}', ${g}, ${JSON.stringify(tamamlanan)})">
-              ${g}. Gün
-            </button>
-          `).join('')}
+          ${gunler.map(g => `<button class="plan-gun ${tamamlanan.includes(g) ? 'tamamlandi' : ''}" onclick="gunToggle('${p.id}', ${g}, ${JSON.stringify(tamamlanan)})">${g}. Gün</button>`).join('')}
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
@@ -1018,75 +747,31 @@ async function aramaYap() {
     const q = document.getElementById('aramaInput').value.trim().toLowerCase();
     const labelEl = document.getElementById('aramaSonucLabel');
     const sonucEl = document.getElementById('aramaSonuclari');
-
-    if (q.length < 2) {
-      labelEl.textContent = '';
-      sonucEl.innerHTML = '';
-      return;
-    }
-
+    if (q.length < 2) { labelEl.textContent = ''; sonucEl.innerHTML = ''; return; }
     const [ayetRes, journalRes, duaRes] = await Promise.all([
       sb.from('ayetler').select('*').order('tarih', { ascending: false }),
       sb.from('gunlukler').select('*').order('tarih', { ascending: false }),
       sb.from('dualar').select('*').order('tarih', { ascending: false }),
     ]);
-
-    const ayetler = (ayetRes.data || []).filter(a =>
-      a.metin?.toLowerCase().includes(q) || a.ref?.toLowerCase().includes(q) || a.aciklama?.toLowerCase().includes(q)
-    );
-    const gunlukler = (journalRes.data || []).filter(j =>
-      j.baslik?.toLowerCase().includes(q) || j.metin?.toLowerCase().includes(q)
-    );
-    const dualar = (duaRes.data || []).filter(d =>
-      d.baslik?.toLowerCase().includes(q) || d.metin?.toLowerCase().includes(q)
-    );
-
+    const ayetler = (ayetRes.data || []).filter(a => a.metin?.toLowerCase().includes(q) || a.ref?.toLowerCase().includes(q) || a.aciklama?.toLowerCase().includes(q));
+    const gunlukler = (journalRes.data || []).filter(j => j.baslik?.toLowerCase().includes(q) || j.metin?.toLowerCase().includes(q));
+    const dualar = (duaRes.data || []).filter(d => d.baslik?.toLowerCase().includes(q) || d.metin?.toLowerCase().includes(q));
     const toplam = ayetler.length + gunlukler.length + dualar.length;
     labelEl.textContent = toplam > 0 ? `"${q}" için ${toplam} sonuç bulundu` : `"${q}" için sonuç bulunamadı`;
-
-    if (toplam === 0) {
-      sonucEl.innerHTML = '<div class="empty-state"><span class="icon">🔍</span>Sonuç bulunamadı.</div>';
-      return;
-    }
-
+    if (toplam === 0) { sonucEl.innerHTML = '<div class="empty-state"><span class="icon">🔍</span>Sonuç bulunamadı.</div>'; return; }
     let html = '';
-
     if (ayetler.length) {
       html += `<div class="section-title" style="margin-bottom:10px;">Ayetler (${ayetler.length})</div>`;
-      html += ayetler.map(a => `
-        <div class="verse-card-item">
-          <div class="verse-card-ref">
-            <span class="kitap-badge ${a.kitap}">${a.kitap.charAt(0).toUpperCase() + a.kitap.slice(1)}</span>
-            ${a.ref}
-            <span class="tarih-kucuk">${new Date(a.tarih).toLocaleDateString('tr-TR')}</span>
-          </div>
-          <div class="verse-card-text">${a.metin}</div>
-        </div>
-      `).join('');
+      html += ayetler.map(a => `<div class="verse-card-item"><div class="verse-card-ref"><span class="kitap-badge ${a.kitap}">${a.kitap === 'eskiahit' ? 'Eski Ahit' : 'Yeni Ahit'}</span>${a.ref}<span class="tarih-kucuk">${new Date(a.tarih).toLocaleDateString('tr-TR')}</span></div><div class="verse-card-text">${a.metin}</div></div>`).join('');
     }
-
     if (gunlukler.length) {
       html += `<div class="section-title" style="margin:14px 0 10px;">Günlükler (${gunlukler.length})</div>`;
-      html += gunlukler.map(j => `
-        <div class="journal-card">
-          <div class="journal-date">${new Date(j.tarih).toLocaleDateString('tr-TR')}</div>
-          <div class="journal-title">${j.baslik}</div>
-          <div class="journal-preview">${j.metin.slice(0, 120)}${j.metin.length > 120 ? '...' : ''}</div>
-        </div>
-      `).join('');
+      html += gunlukler.map(j => `<div class="journal-card"><div class="journal-date">${new Date(j.tarih).toLocaleDateString('tr-TR')}</div><div class="journal-title">${j.baslik}</div><div class="journal-preview">${j.metin.slice(0, 120)}${j.metin.length > 120 ? '...' : ''}</div>${j.gorsel_url ? `<img src="${j.gorsel_url}" class="journal-gorsel" />` : ''}</div>`).join('');
     }
-
     if (dualar.length) {
       html += `<div class="section-title" style="margin:14px 0 10px;">Dualar (${dualar.length})</div>`;
-      html += dualar.map(d => `
-        <div class="dua-card">
-          <div class="dua-card-baslik">${d.baslik}</div>
-          <div class="dua-card-tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}</div>
-          <div class="dua-card-metin">${d.metin.slice(0, 120)}${d.metin.length > 120 ? '...' : ''}</div>
-        </div>
-      `).join('');
+      html += dualar.map(d => `<div class="dua-card"><div class="dua-card-baslik">${d.baslik}</div><div class="dua-card-tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}</div><div class="dua-card-metin">${d.metin.slice(0, 120)}${d.metin.length > 120 ? '...' : ''}</div></div>`).join('');
     }
-
     sonucEl.innerHTML = html;
   }, 350);
 }
@@ -1094,58 +779,30 @@ async function aramaYap() {
 // GEÇMİŞ
 async function loadGecmis() {
   const el = document.getElementById('gecmisListesi');
-
   const [ayetRes, journalRes, duaRes] = await Promise.all([
     sb.from('ayetler').select('*').order('tarih', { ascending: false }),
     sb.from('gunlukler').select('*').order('tarih', { ascending: false }),
     sb.from('dualar').select('*').order('tarih', { ascending: false }),
   ]);
-
   let items = [];
-  (ayetRes.data || []).forEach(a => items.push({ tip: 'ayet', tarih: a.tarih, ...a }));
-  (journalRes.data || []).forEach(j => items.push({ tip: 'journal', tarih: j.tarih, ...j }));
-  (duaRes.data || []).forEach(d => items.push({ tip: 'dua', tarih: d.tarih, ...d }));
+  (ayetRes.data || []).forEach(a => items.push({ tip: 'ayet', ...a }));
+  (journalRes.data || []).forEach(j => items.push({ tip: 'journal', ...j }));
+  (duaRes.data || []).forEach(d => items.push({ tip: 'dua', ...d }));
   items.sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
-
   const filtered = currentFilter === 'hepsi' ? items : items.filter(i => i.tip === currentFilter);
-
-  if (!filtered.length) {
-    el.innerHTML = '<div class="empty-state"><span class="icon">📚</span>Bu kategoride henüz kayıt yok.</div>';
-    return;
-  }
-
+  if (!filtered.length) { el.innerHTML = '<div class="empty-state"><span class="icon">📚</span>Bu kategoride henüz kayıt yok.</div>'; return; }
   el.innerHTML = filtered.map(g => {
     const tarih = new Date(g.tarih).toLocaleDateString('tr-TR');
-    if (g.tip === 'ayet') return `
-      <div class="verse-card-item">
-        <div class="verse-card-ref">
-          <span class="kitap-badge ${g.kitap}">${g.kitap.charAt(0).toUpperCase() + g.kitap.slice(1)}</span>
-          ${g.ref}
-          <span class="tarih-kucuk">${tarih}</span>
-        </div>
-        <div class="verse-card-text">${g.metin}</div>
-      </div>`;
-    if (g.tip === 'journal') return `
-      <div class="journal-card">
-        <div class="journal-date">${tarih} · Günlük</div>
-        <div class="journal-title">${g.baslik}</div>
-        <div class="journal-preview">${g.metin.slice(0, 100)}...</div>
-      </div>`;
-    if (g.tip === 'dua') return `
-      <div class="dua-card">
-        <div class="dua-card-baslik">${g.baslik}</div>
-        <div class="dua-card-tarih">${tarih} · Dua</div>
-        <div class="dua-card-metin">${g.metin.slice(0, 100)}...</div>
-      </div>`;
+    if (g.tip === 'ayet') return `<div class="verse-card-item"><div class="verse-card-ref"><span class="kitap-badge ${g.kitap}">${g.kitap === 'eskiahit' ? 'Eski Ahit' : 'Yeni Ahit'}</span>${g.ref}<span class="tarih-kucuk">${tarih}</span></div><div class="verse-card-text">${g.metin}</div></div>`;
+    if (g.tip === 'journal') return `<div class="journal-card"><div class="journal-date">${tarih} · Günlük</div><div class="journal-title">${g.baslik}</div><div class="journal-preview">${g.metin.slice(0, 100)}...</div>${g.gorsel_url ? `<img src="${g.gorsel_url}" class="journal-gorsel" />` : ''}</div>`;
+    if (g.tip === 'dua') return `<div class="dua-card"><div class="dua-card-baslik">${g.baslik}</div><div class="dua-card-tarih">${tarih} · Dua</div><div class="dua-card-metin">${g.metin.slice(0, 100)}...</div></div>`;
   }).join('');
 }
 
-
-// MODAL YARDIMCILARI
+// MODAL
 function modalAc(id) { document.getElementById(id).classList.add('open'); }
 function modalKapat(id) { document.getElementById(id).classList.remove('open'); }
 
-// AYET DÜZENLE
 function ayetDuzenle(a) {
   if (typeof a === "string") a = JSON.parse(a.replace(/&quot;/g, '"'));
   document.getElementById('editAyetId').value = a.id;
@@ -1167,11 +824,9 @@ async function ayetGuncelle() {
   if (error) { showToast('Hata: ' + error.message); return; }
   modalKapat('modalAyet');
   showToast('Ayet güncellendi ✦');
-  loadAyetler();
-  loadGecmis();
+  loadAyetler(); loadGecmis();
 }
 
-// GÜNLÜK DÜZENLE
 function journalDuzenle(j) {
   if (typeof j === "string") j = JSON.parse(j.replace(/&quot;/g, '"'));
   document.getElementById('editJournalId').value = j.id;
@@ -1191,11 +846,9 @@ async function journalGuncelle() {
   if (error) { showToast('Hata: ' + error.message); return; }
   modalKapat('modalJournal');
   showToast('Günlük güncellendi ✦');
-  loadJournals();
-  loadGecmis();
+  loadJournals(); loadGecmis();
 }
 
-// DUA DÜZENLE
 function duaDuzenle(d) {
   if (typeof d === "string") d = JSON.parse(d.replace(/&quot;/g, '"'));
   document.getElementById('editDuaId').value = d.id;
@@ -1215,94 +868,35 @@ async function duaGuncelle() {
   if (error) { showToast('Hata: ' + error.message); return; }
   modalKapat('modalDua');
   showToast('Dua güncellendi ✦');
-  loadDualar();
-  loadGecmis();
+  loadDualar(); loadGecmis();
 }
 
-
-
+// WORD İNDİR
 async function wordIndir() {
   showToast('Hazırlanıyor...');
-
   const [ayetRes, journalRes, duaRes] = await Promise.all([
     sb.from('ayetler').select('*').order('tarih', { ascending: false }),
     sb.from('gunlukler').select('*').order('tarih', { ascending: false }),
     sb.from('dualar').select('*').order('tarih', { ascending: false }),
   ]);
-
   const ayetler = ayetRes.data || [];
   const gunlukler = journalRes.data || [];
   const dualar = duaRes.data || [];
-
-  let html = `
-    <html><head><meta charset="UTF-8">
-    <style>
-      body { font-family: Georgia, serif; color: #1a1a2e; margin: 40px; line-height: 1.7; }
-      h1 { color: #c9a84c; font-size: 26px; border-bottom: 2px solid #c9a84c; padding-bottom: 8px; }
-      h2 { color: #162040; font-size: 20px; margin-top: 30px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
-      h3 { color: #c9a84c; font-size: 15px; margin-bottom: 4px; }
-      .tarih { font-size: 12px; color: #888; margin-bottom: 6px; }
-      .metin { font-style: italic; margin-bottom: 6px; }
-      .not { font-size: 13px; color: #555; border-left: 3px solid #c9a84c; padding-left: 10px; }
-      .kart { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
-      .bos { color: #999; font-style: italic; }
-    </style>
-    </head><body>
-    <h1>✦ Kutsal Kitap Günlüğü</h1>
-    <p class="tarih">İndirilme tarihi: ${new Date().toLocaleDateString('tr-TR')}</p>
-  `;
-
-  // AYETLERİM
+  let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Georgia,serif;color:#1a1a2e;margin:40px;line-height:1.7;}h1{color:#c9a84c;font-size:26px;border-bottom:2px solid #c9a84c;padding-bottom:8px;}h2{color:#162040;font-size:20px;margin-top:30px;border-bottom:1px solid #ccc;padding-bottom:4px;}h3{color:#c9a84c;font-size:15px;margin-bottom:4px;}.tarih{font-size:12px;color:#888;margin-bottom:6px;}.metin{font-style:italic;margin-bottom:6px;}.not{font-size:13px;color:#555;border-left:3px solid #c9a84c;padding-left:10px;}.kart{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #eee;}.bos{color:#999;font-style:italic;}</style></head><body><h1>✦ Kutsal Kitap Günlüğü</h1><p class="tarih">İndirilme tarihi: ${new Date().toLocaleDateString('tr-TR')}</p>`;
   html += '<h2>📖 Ayetlerim</h2>';
-  if (ayetler.length) {
-    ayetler.forEach(a => {
-      html += `<div class="kart">
-        <h3>${a.ref} <span style="font-size:11px;color:#888;">(${a.kitap === 'eskiahit' ? 'Eski Ahit' : 'Yeni Ahit'})</span></h3>
-        <div class="tarih">${new Date(a.tarih).toLocaleDateString('tr-TR')}</div>
-        <div class="metin">${a.metin}</div>
-        ${a.aciklama ? `<div class="not">${a.aciklama}</div>` : ''}
-      </div>`;
-    });
-  } else {
-    html += '<p class="bos">Henüz ayet eklenmemiş.</p>';
-  }
-
-  // GÜNLÜKLER
+  if (ayetler.length) ayetler.forEach(a => { html += `<div class="kart"><h3>${a.ref} <span style="font-size:11px;color:#888;">(${a.kitap === 'eskiahit' ? 'Eski Ahit' : 'Yeni Ahit'})</span></h3><div class="tarih">${new Date(a.tarih).toLocaleDateString('tr-TR')}</div><div class="metin">${a.metin}</div>${a.aciklama ? `<div class="not">${a.aciklama}</div>` : ''}</div>`; });
+  else html += '<p class="bos">Henüz ayet eklenmemiş.</p>';
   html += '<h2>📝 Günlüklerim</h2>';
-  if (gunlukler.length) {
-    gunlukler.forEach(j => {
-      html += `<div class="kart">
-        <h3>${j.baslik}</h3>
-        <div class="tarih">${new Date(j.tarih).toLocaleDateString('tr-TR')}${j.ref ? ' · ' + j.ref : ''}</div>
-        <div>${j.metin}</div>
-      </div>`;
-    });
-  } else {
-    html += '<p class="bos">Henüz günlük eklenmemiş.</p>';
-  }
-
-  // DUALAR
+  if (gunlukler.length) gunlukler.forEach(j => { html += `<div class="kart"><h3>${j.baslik}</h3><div class="tarih">${new Date(j.tarih).toLocaleDateString('tr-TR')}${j.ref ? ' · ' + j.ref : ''}</div><div>${j.metin}</div></div>`; });
+  else html += '<p class="bos">Henüz günlük eklenmemiş.</p>';
   html += '<h2>🙏 Dualarım</h2>';
-  if (dualar.length) {
-    dualar.forEach(d => {
-      html += `<div class="kart">
-        <h3>${d.baslik}</h3>
-        <div class="tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}${d.ref ? ' · ' + d.ref : ''}</div>
-        <div>${d.metin}</div>
-      </div>`;
-    });
-  } else {
-    html += '<p class="bos">Henüz dua eklenmemiş.</p>';
-  }
-
+  if (dualar.length) dualar.forEach(d => { html += `<div class="kart"><h3>${d.baslik}</h3><div class="tarih">${new Date(d.tarih).toLocaleDateString('tr-TR')}${d.ref ? ' · ' + d.ref : ''}</div><div>${d.metin}</div></div>`; });
+  else html += '<p class="bos">Henüz dua eklenmemiş.</p>';
   html += '</body></html>';
-
   const blob = new Blob([html], { type: 'application/msword' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'kutsal-kitap-gunlugum.doc';
-  a.click();
+  a.href = url; a.download = 'kutsal-kitap-gunlugum.doc'; a.click();
   URL.revokeObjectURL(url);
   showToast('İndirildi ✦');
 }
@@ -1324,15 +918,11 @@ function filterGecmis(tip, btn) {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('authScreen').style.display !== 'none') {
-    handleAuth();
-  }
+  if (e.key === 'Enter' && document.getElementById('authScreen').style.display !== 'none') handleAuth();
 });
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
-  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js'));
 }
 </script>
 </body>
